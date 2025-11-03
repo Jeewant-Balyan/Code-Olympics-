@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Code Olympics — Ultimate Scrapper</title>
+    <style>
+      :root {
+        --bg: #041023;
+        --card: #071428;
+        --muted: #9aa6bf;
+        --accent: #39a2ff;
+        --glow: 0 6px 30px rgba(57, 162, 255, 0.08);
+        --text: #e6f0ff;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: ui-monospace, Consolas, monospace;
+        min-height: 100vh;
+        background: linear-gradient(180deg, #020614 0%, var(--bg) 60%);
+        color: var(--text);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+      }
+      .wrap {
+        width: 100%;
+        max-width: 920px;
+      }
+      .head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+      }
+      .title h1 {
+        color: var(--accent);
+        font-size: 18px;
+      }
+      .subtitle {
+        color: var(--muted);
+        font-size: 12px;
+        margin-top: 4px;
+      }
+      .card {
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.02),
+          transparent
+        );
+        border: 1px solid rgba(255, 255, 255, 0.03);
+        padding: 12px;
+        border-radius: 10px;
+        box-shadow: var(--glow);
+      }
+      label {
+        display: block;
+        font-size: 12px;
+        color: var(--accent);
+        margin-bottom: 6px;
+      }
+      textarea {
+        width: 100%;
+        padding: 10px;
+        border-radius: 8px;
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.04);
+        color: var(--text);
+        resize: vertical;
+        min-height: 160px;
+      }
+      .controls {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        margin-top: 8px;
+      }
+      .btn {
+        background: linear-gradient(180deg, var(--accent), #6be0ff);
+        padding: 8px 12px;
+        border-radius: 8px;
+        border: none;
+        font-weight: 700;
+        cursor: pointer;
+        color: #012035;
+      }
+      .reset {
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.04);
+        padding: 7px 10px;
+        border-radius: 8px;
+        color: var(--muted);
+      }
+      .muted {
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .small {
+        font-size: 13px;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+      .dense {
+        height: 12px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.02);
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.03);
+      }
+      .dense > i {
+        display: inline-block;
+        height: 100%;
+      }
+      .cComments {
+        background: rgba(57, 162, 255, 0.85);
+        width: 0;
+      }
+      .cBlank {
+        background: rgba(255, 255, 255, 0.12);
+        width: 0;
+      }
+      .cCode {
+        background: rgba(6, 110, 246, 0.8);
+        width: 0;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      @media (max-width: 760px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      .footer {
+        margin-top: 12px;
+        text-align: center;
+        color: var(--muted);
+        font-size: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="head">
+        <div>
+          <div class="title"><h1>🏆 Code Olympics — Scapper</h1></div>
+          <div class="subtitle">Paste code or GitHub repo URL</div>
+        </div>
+        <div class="muted">Built by Jeewant Balyan</div>
+      </div>
+
+      <div class="card">
+        <label for="inputBox">Paste code or enter GitHub URL</label>
+        <textarea
+          id="inputBox"
+          placeholder="Paste your code here or enter https://github.com/user/repo"
+        ></textarea>
+        <div class="controls">
+          <button id="analyze" class="btn">🚀 Analyze</button>
+          <button id="reset" class="reset">Reset</button>
+          <div id="status" class="muted" style="margin-left: auto">Ready</div>
+        </div>
+      </div>
+
+      <div id="main" style="display: none" class="card">
+        <div class="grid" style="width: 100%">
+          <div>
+            <h3
+              style="color: var(--accent); font-size: 14px; margin-bottom: 6px"
+            >
+              📊 Summary
+            </h3>
+            <div id="summary" class="small">—</div>
+          </div>
+          <div>
+            <h3
+              style="color: var(--accent); font-size: 14px; margin-bottom: 6px"
+            >
+              📈 Metrics
+            </h3>
+            <div id="metrics" class="small">—</div>
+            <div style="margin-top: 8px" class="dense" aria-hidden="true">
+              <i id="cComments" class="cComments"></i
+              ><i id="cBlank" class="cBlank"></i
+              ><i id="cCode" class="cCode"></i>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top: 10px">
+          <h3 style="color: var(--accent); font-size: 14px; margin-bottom: 6px">
+            📝 Notes
+          </h3>
+          <div id="notes" class="small">—</div>
+        </div>
+      </div>
+
+      <div class="footer">Code Olympics — Analyzer</div>
+    </div>
+
+    <script>
+      const $ = (id) => document.getElementById(id);
+      const inputBox = $("inputBox"),
+        analyzeBtn = $("analyze"),
+        resetBtn = $("reset"),
+        status = $("status"),
+        main = $("main"),
+        summaryEl = $("summary"),
+        metricsEl = $("metrics"),
+        notesEl = $("notes"),
+        cComments = $("cComments"),
+        cBlank = $("cBlank"),
+        cCode = $("cCode");
+
+      function resetUI() {
+        inputBox.value = "";
+        main.style.display = "none";
+        status.textContent = "Ready";
+        summaryEl.textContent = "—";
+        metricsEl.textContent = "—";
+        notesEl.textContent = "";
+        cComments.style.width = cBlank.style.width = cCode.style.width = "0";
+      }
+      resetBtn.onclick = resetUI;
+
+      async function fetchText(u) {
+        const r = await fetch(u);
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        return await r.text();
+      }
+      async function fetchRepoRoot(url) {
+        const m = url.match(/github\.com\/([^\/]+)\/([^\/]+)/i);
+        if (!m) throw new Error("Invalid GitHub URL");
+        const user = m[1],
+          repo = m[2];
+        const api = `https://api.github.com/repos/${user}/${repo}/contents`;
+        const r = await fetch(api);
+        if (!r.ok) throw new Error("GitHub API " + r.status);
+        const list = await r.json();
+        if (!Array.isArray(list)) throw new Error("No repo contents");
+        let code = "",
+          fileCount = 0;
+        const exts = /\.(js|jsx|ts|py|java|cpp|c|cs|html|css)$/i;
+        for (const f of list) {
+          if (f.type === "file" && exts.test(f.name)) {
+            try {
+              const t = await fetchText(f.download_url);
+              code += `\n/* FILE: ${f.name} */\n` + t + "\n";
+              fileCount++;
+            } catch (e) {}
+          }
+        }
+        if (!code.trim()) throw new Error("No supported files in repo root");
+        return { code, meta: { repo: user + "/" + repo, fileCount } };
+      }
+
+      function analyzeCode(code) {
+        const lines = code.replace(/\r/g, "").split("\n");
+        const total = lines.length;
+        const blank = lines.filter((l) => !l.trim()).length;
+        const comments = lines.filter((l) =>
+          /^\s*(\/\/|#|\/\*|\* )/.test(l)
+        ).length;
+        const vars = [
+          ...code.matchAll(
+            /\b(var|let|const|int|float|double|char|String)\s+([A-Za-z_]\w*)/g
+          ),
+        ].map((m) => m[2]);
+        const fnMatches = [
+          ...code.matchAll(
+            /\bfunction\s+([A-Za-z_]\w*)|\bdef\s+([A-Za-z_]\w*)|([A-Za-z_]\w*)\s*=\s*\([^)]*\)\s*=>/g
+          ),
+        ];
+        const functions = fnMatches
+          .map((m) => m[1] || m[2] || m[3])
+          .filter(Boolean);
+        const loops = (code.match(/\b(for|while|do)\b/g) || []).length;
+        const conds = (code.match(/\b(if|else\s*if|switch|case)\b/g) || [])
+          .length;
+        const imports = (
+          code.match(
+            /^\s*(import\s+|from\s+|#include\s+|require\(|using\s+)/gim
+          ) || []
+        ).length;
+        return {
+          total,
+          blank,
+          comments,
+          vars: [...new Set(vars)],
+          functions: [...new Set(functions)],
+          functionsCount: [...new Set(functions)].length,
+          loops,
+          conditions: conds,
+          imports,
+        };
+      }
+
+      function renderSummary(res, meta) {
+        let o = `<div><b>Total Lines:</b> ${res.total}</div>
+             <div><b>Blank Lines:</b> ${res.blank}</div>
+             <div><b>Comments:</b> ${res.comments}</div>`;
+        if (meta)
+          o += `<div style="margin-top:6px;color:var(--muted);font-size:12px">Repo: ${meta.repo} • Files: ${meta.fileCount}</div>`;
+        return o;
+      }
+      function renderMetrics(r) {
+        return `<div><b>Functions:</b> ${r.functionsCount}</div>
+              <div><b>Variables:</b> ${r.vars.length}</div>
+              <div><b>Loops:</b> ${r.loops}</div>
+              <div><b>Conditions:</b> ${r.conditions}</div>
+              <div><b>Imports:</b> ${r.imports}</div>`;
+      }
+
+      analyzeBtn.onclick = async () => {
+        status.textContent = "Analyzing...";
+        main.style.display = "none";
+        let raw = inputBox.value.trim(),
+          meta = null;
+        try {
+          if (!raw) throw new Error("Please paste code or provide repo URL");
+          let code = raw;
+          if (raw.startsWith("http") && raw.includes("github.com")) {
+            const r = await fetchRepoRoot(raw);
+            code = r.code;
+            meta = r.meta;
+          }
+          const t0 = performance.now();
+          const res = analyzeCode(code);
+          summaryEl.innerHTML = renderSummary(res, meta);
+          metricsEl.innerHTML = renderMetrics(res);
+          notesEl.textContent = `Analysis time: ${(
+            performance.now() - t0
+          ).toFixed(1)} ms`;
+          const tot = Math.max(1, res.total);
+          cComments.style.width = Math.round((res.comments / tot) * 100) + "%";
+          cBlank.style.width = Math.round((res.blank / tot) * 100) + "%";
+          cCode.style.width =
+            Math.max(
+              1,
+              100 -
+                Math.round((res.comments / tot) * 100) -
+                Math.round((res.blank / tot) * 100)
+            ) + "%";
+          status.textContent = meta ? `REPO (${meta.repo})` : "PASTE";
+          main.style.display = "block";
+        } catch (e) {
+          alert("Error: " + e.message);
+          status.textContent = "Error";
+        }
+      };
+      inputBox.addEventListener("keydown", (e) => {
+        if (e.ctrlKey && e.key === "Enter") analyzeBtn.click();
+      });
+      resetUI();
+    </script>
+  </body>
+</html>
