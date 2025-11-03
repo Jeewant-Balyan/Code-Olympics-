@@ -1,6 +1,6 @@
-# 🏆 Code Olympics — Ultimate Scrapper (Judge Assist Tool)
+# 🏆 Code Olympics — Ultimate Scrapper (Judge Assist Tool for Code Olympics)
 
-A futuristic, web scrapper tool designed to help **Code Olympics judges** automatically evaluate submitted projects — analyzing line counts, loops, functions, and structural depth — all under **400 lines** with **no imports**.
+A futuristic, web scrapper & analyser tool designed to help **Code Olympics judges** automatically evaluate submitted projects — analyzing line counts, loops, functions, and structural depth — all under **400 lines** with **no imports**.
 
 ---
 
@@ -73,8 +73,9 @@ It ensures each project’s technical compliance can be **verified quickly, fair
 
 ## 🔮 Future Enhancements
 
+- 🌐 Website Integration: Extend scraping capabilities to hosted project websites — automatically fetch and analyze deployed frontend code or resources.
 - 🧠 Add **AI-based code originality detection**  
-- 📊 Export judge reports as PDF/CSV  
+- 📊 Advanced Metrics: Add deeper insights like code complexity, variable density, or nesting depth visualization.
 - ⚡ Add multi-file repository summary view  
 
 ---
